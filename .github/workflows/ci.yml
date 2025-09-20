@@ -1,0 +1,161 @@
+name: Python Tests
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.9, 3.10, 3.11, 3.12]
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install pipenv
+      run: |
+        python -m pip install --upgrade pip
+        pip install pipenv
+
+    - name: Install dependencies from Pipfile.lock
+      run: |
+        pipenv install --deploy --dev
+
+    - name: Run type checking with mypy
+      run: |
+        pipenv run mypy --ignore-missing-imports *.py
+
+    - name: Run basic syntax validation
+      run: |
+        python -m py_compile *.py
+
+    - name: Test imports and basic functionality
+      run: |
+        pipenv run python -c "
+        # Test basic imports
+        from board import Board
+        from piece import Piece
+        from ui import TetrisRenderer
+        
+        # Test basic object creation
+        board = Board()
+        piece = Piece()
+        
+        print('✓ All imports successful')
+        print('✓ Basic object creation successful')
+        "
+
+    - name: Verify file structure
+      run: |
+        if [ ! -f 'main.py' ]; then echo '❌ main.py missing'; exit 1; fi
+        if [ ! -f 'board.py' ]; then echo '❌ board.py missing'; exit 1; fi
+        if [ ! -f 'piece.py' ]; then echo '❌ piece.py missing'; exit 1; fi
+        if [ ! -f 'ui.py' ]; then echo '❌ ui.py missing'; exit 1; fi
+        if [ ! -f 'Pipfile.lock' ]; then echo '❌ Pipfile.lock missing'; exit 1; fi
+        echo '✓ All required files present'
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.12'
+
+    - name: Install pipenv
+      run: |
+        python -m pip install --upgrade pip
+        pip install pipenv
+
+    - name: Install dependencies from Pipfile.lock
+      run: |
+        pipenv install --deploy --dev
+
+    - name: Run flake8
+      run: |
+        pipenv run flake8 *.py --max-line-length=120 --ignore=E501,W503,E402
+
+    - name: Run pylint
+      run: |
+        pipenv run pylint *.py --disable=missing-docstring,too-few-public-methods,import-error,too-many-instance-attributes,too-many-public-methods
+
+  # Additional job for running the game in headless mode (basic functionality test)
+  headless-test:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.12'
+
+    - name: Install pipenv
+      run: |
+        python -m pip install --upgrade pip
+        pip install pipenv
+
+    - name: Install dependencies
+      run: |
+        pipenv install --deploy --dev
+
+    - name: Set up virtual display for headless testing
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y xvfb
+
+    - name: Run basic game initialization test
+      run: |
+        xvfb-run -a pipenv run python -c "
+        import pygame
+        pygame.init()
+        pygame.quit()
+        print('✓ PyGame initialized successfully')
+        
+        # Test that all modules can be imported without runtime errors
+        from board import Board
+        from piece import Piece
+        from ui import TetrisRenderer
+        from main import TetrisGame, GameState
+        
+        print('✓ All game modules imported successfully')
+        "
+
+  # Security scan for dependencies
+  security-scan:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.12'
+
+    - name: Install pipenv
+      run: |
+        python -m pip install --upgrade pip
+        pip install pipenv safety
+
+    - name: Install dependencies
+      run: |
+        pipenv install --deploy --dev
+
+    - name: Run safety check
+      run: |
+        pipenv run safety check --full-report
