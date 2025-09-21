@@ -77,7 +77,11 @@ class TetrisRenderer:
         pygame.draw.rect(surface, color, [x, y, size-2, size-2], border_radius=border_radius)
         
         # Highlight effect
-        highlight_color: Color = tuple(min(255, c + 30) for c in color)
+        highlight_color: Color = (
+            min(255, color[0] + 30),
+            min(255, color[1] + 30),
+            min(255, color[2] + 30),
+        )
         pygame.draw.rect(surface, highlight_color, [x, y, size-2, 4], border_radius=border_radius)
     
     def draw_board_background(self, surface: pygame.Surface, x: int, y: int, width: int, height: int) -> None:

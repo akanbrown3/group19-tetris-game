@@ -9,6 +9,7 @@ class Board:
         self.width: int = width
         self.height: int = height
         self.player_id: int = player_id
+        self.opponent: Optional['Board'] = None
         self.grid: List[List[int]] = [[0 for _ in range(width)] for _ in range(height)]
         self.current_piece: Optional[Piece] = None
         self.next_piece: Optional[Piece] = None
