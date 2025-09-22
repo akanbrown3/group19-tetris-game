@@ -2,8 +2,8 @@ import pygame
 import sys
 from enum import Enum
 from typing import Dict, List, Tuple, Optional, Callable, Any
-from board import Board
-from ui import TetrisRenderer
+from .board import Board
+from .ui import TetrisRenderer
 
 class GameState(Enum):
     MENU = "menu"
