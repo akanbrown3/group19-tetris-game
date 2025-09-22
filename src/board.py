@@ -1,5 +1,5 @@
 from typing import List, Optional, Dict, Any, Union
-from piece import Piece
+from .piece import Piece
 
 class Board:
     """Tetris game board with hold piece and competitive features"""
@@ -184,9 +184,12 @@ class Board:
             if all(self.grid[y][x] > 0 for x in range(self.width)):
                 lines_to_clear.append(y)
         
-        # Remove completed lines
+        # Remove completed lines (process from bottom to top to maintain indices)
         for y in reversed(lines_to_clear):
             del self.grid[y]
+        
+        # Add new empty lines at the top
+        for _ in range(len(lines_to_clear)):
             self.grid.insert(0, [0] * self.width)
         
         return len(lines_to_clear)
