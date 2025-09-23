@@ -9,6 +9,6 @@ pygame = "*"
 [dev-packages]
 pytest = "*"
 pytest-cov = "*"
-
+exceptiongroup = "*"
 [requires]
 python_version = "3.10"

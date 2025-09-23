@@ -91,9 +91,11 @@ jobs:
           pipenv lock
         fi
 
-    - name: Install with pipenv
+    - name: Install with pipenv and fix compatibility
       run: |
         pipenv install --dev
+        # Fix pytest compatibility issue with Python 3.10
+        pipenv install exceptiongroup
 
     - name: Run tests with pipenv
       run: |
