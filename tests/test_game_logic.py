@@ -29,10 +29,10 @@ class TestGameLogic:
                 delattr(game, "screen")
         except Exception as e:
             # If pygame isn't available, test basic class structure
-            assert GameState.MENU == "menu"
-            assert GameState.SINGLE_PLAYER == "single"
-            assert GameState.MULTIPLAYER == "multiplayer"
-            
+            assert GameState.MENU.value == "menu"
+            assert GameState.SINGLE_PLAYER.value == "single"
+            assert GameState.MULTIPLAYER.value == "multiplayer"
+
     def test_piece_spawn_and_placement_integration(self):
         """Test full piece lifecycle: spawn -> move -> lock -> clear"""
         board = Board()
