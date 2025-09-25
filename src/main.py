@@ -1,9 +1,12 @@
 import pygame
+import os
 import sys
 from enum import Enum
-from typing import Dict, List, Tuple, Optional, Callable, Any
-from board import Board
-from ui import TetrisRenderer
+from typing import Dict, List, Tuple, Optional
+
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from src.board import Board
+from src.ui import TetrisRenderer
 
 class GameState(Enum):
     MENU = "menu"

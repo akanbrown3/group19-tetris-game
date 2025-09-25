@@ -1,5 +1,5 @@
 import pygame
-from typing import Tuple, Optional, Dict, List, Any, Union
+from typing import Tuple, Optional, Dict, List, Any
 
 # Type aliases for better readability
 Color = Tuple[int, int, int]

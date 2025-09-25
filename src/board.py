@@ -1,5 +1,5 @@
-from typing import List, Optional, Dict, Any, Union
-from piece import Piece
+from typing import List, Optional, Dict
+from src.piece import Piece
 
 class Board:
     """Tetris game board with hold piece and competitive features"""
